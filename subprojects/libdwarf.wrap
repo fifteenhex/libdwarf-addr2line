@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/fifteenhex/libdwarf-code.git
+revision = declaremesondep-20240113
+depth = 1
