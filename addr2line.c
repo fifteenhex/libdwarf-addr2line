@@ -14,6 +14,7 @@ from libdwarf.  It just silently moves on.
 #include <fcntl.h>
 #include "dwarf.h"
 #include "libdwarf.h"
+#include "addr2line.h"
 
 #define DW_PR_DUx "llx"
 #define DW_PR_DUu "llu"
@@ -27,13 +28,6 @@ from libdwarf.  It just silently moves on.
 #define HIGHADDR (Dwarf_Unsigned)0xffffffffffffffff
 
 static const char *objfile_name = "<none>";
-
-typedef struct flags {
-    Dwarf_Bool addresses;
-    Dwarf_Bool batchmode;
-    Dwarf_Bool force_batchmode;
-    Dwarf_Bool force_nobatchmode;
-} flagsT;
 
 typedef struct lookup_table {
     Dwarf_Line *table;
@@ -756,4 +750,9 @@ main(int argc, char *argv[])
     }
     dwarf_finish(dbg);
     return 0;
+}
+
+Dwarf_Bool libdwarf_addr2line_lookup_pc(Dwarf_Debug dbg, flagsT *flags, Dwarf_Addr pc)
+{
+	return lookup_pc(dbg, flags, pc);
 }
