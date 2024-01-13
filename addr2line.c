@@ -687,6 +687,20 @@ populate_options(int argc, char *argv[], char **objfile,
     }
 }
 
+
+int dwarf_addr2line_init_path(const char *objfile, Dwarf_Debug *dbg)
+{
+	Dwarf_Ptr errarg = 0;
+
+	int ret = dwarf_init_path(objfile, NULL, 0,
+			DW_GROUPNUMBER_ANY, err_handler, errarg, dbg, NULL);
+	if (ret == DW_DLV_NO_ENTRY) {
+		fail_exit("Unable to open file");
+	}
+
+	return ret;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -698,16 +712,11 @@ main(int argc, char *argv[])
     char *pc_buf = 0;
     char *endptr = 0;
     lookup_tableT lookup_table;
-    Dwarf_Ptr errarg = 0;
 
     flagsT flags = {0};
     populate_options(argc, argv, &objfile, &flags);
     objfile_name = objfile;
-    ret = dwarf_init_path(objfile, NULL, 0,
-        DW_GROUPNUMBER_ANY, err_handler, errarg, &dbg, NULL);
-    if (ret == DW_DLV_NO_ENTRY) {
-        fail_exit("Unable to open file");
-    }
+    ret = dwarf_addr2line_init_path(objfile, &dbg);
 
     do_read_stdin = (optind >= argc);
     if (! flags.force_nobatchmode &&
